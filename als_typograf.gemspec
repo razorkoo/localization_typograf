@@ -3,11 +3,11 @@ $LOAD_PATH.push File.expand_path('../lib', __FILE__)
 require 'als_typograf/version'
 
 Gem::Specification.new do |s|
-  s.name = 'als_typograf'
+  s.name = 'localization_typograf'
   s.version = AlsTypograf::VERSION
   s.authors = ['Alexander Semyonov']
   s.email = 'al@semyonov.us'
-  s.homepage = 'http://github.com/alsemyonov/als_typograf'
+  s.homepage = 'https://github.com/razorkoo/localization_typograf'
   s.summary = 'ArtLebedevStudio.RemoteTypograf'
   s.description = 'Ruby client for ArtLebedevStudio.RemoteTypograf service'
 
