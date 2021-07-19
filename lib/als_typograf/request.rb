@@ -12,10 +12,15 @@ module AlsTypograf
     # Process text with remote web-service
     # @param [String] text text to process
     # @param [Hash] options options for web-service
+    # @param [String] locale locae of the string
     # @return [String]
-    def self.process_text(text, options = {})
+    def self.process_text(text, options = {}, locale)
       text = text.encode(options[:encoding])
-
+      quotA = "quot"
+      quotB = "quot"
+      if locale == "ru"
+        quotB = "laquo raquo"
+      end
       body = <<-END_SOAP
 <?xml version="1.0" encoding="#{options[:encoding]}" ?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -26,6 +31,8 @@ module AlsTypograf
      <useBr>#{options[:use_br]}</useBr>
      <useP>#{options[:use_p]}</useP>
      <maxNobr>#{options[:max_nobr]}</maxNobr>
+     <quotA>#{quotA}</quotA>
+     <quotB>#{quotB}</quotB>
   </ProcessText>
  </soap:Body>
 </soap:Envelope>
@@ -44,7 +51,8 @@ module AlsTypograf
       return nil unless response.is_a?(Net::HTTPSuccess)
       result = response.body
       result.force_encoding(options[:encoding]) if result.respond_to?(:force_encoding)
-      result = Regexp.last_match[1].gsub(/&gt;/, '>').gsub(/&lt;/, '<').gsub(/&amp;/, '&').gsub(/(\t|\n)$/, '') if RESULT_REGEXP =~ result
+      result = Regexp.last_match[1].gsub(/&gt;/, '>').gsub(/&lt;/, '<').gsub(/&amp;/, '&').gsub(/(\t|\n)$/, '').gsub(/&nbsp;/, '\U00A0')
+      .gsub(/&quot;/, "\"").gsub(/&laquo;/, "«").gsub(/&raquo;/, "»") if RESULT_REGEXP =~ result
       result.encode(options[:encoding])
     end
   end
